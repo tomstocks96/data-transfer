@@ -24,6 +24,8 @@ services:
                   url: "http://connect:8083"
     ports:
       - 8080:8080
+    networks:
+      - kafka
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.0

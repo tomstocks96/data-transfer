@@ -5,6 +5,9 @@ networks:
   kafka:
     name: kafka
 
+volumes:
+  kafka-logs:
+
 services:
 
   akhq:

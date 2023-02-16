@@ -62,6 +62,8 @@ services:
       KAFKA_JMX_HOSTNAME: localhost
     networks:
       - kafka
+    volumes:
+      - kafka-logs:/var/lib/kafka/data
 
   schema-registry:
     image: confluentinc/cp-schema-registry:7.3.0

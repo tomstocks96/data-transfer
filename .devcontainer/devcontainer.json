@@ -1,0 +1,20 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/ubuntu
+{
+	"name": "Python",
+	"dockerComposeFile": "../docker-compose.yml",
+	"service": "stream-processor",
+	"workspaceFolder": "/app"
+	// "build": {
+	// 	"dockerfile": "build.Dockerfile",
+	// 	"context": ".."
+	// 	// Update 'VARIANT' to pick an Ubuntu version: jammy / ubuntu-22.04, focal / ubuntu-20.04, bionic /ubuntu-18.04
+	// 	// Use ubuntu-22.04 or ubuntu-18.04 on local arm64/Apple Silicon.
+	// }
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "uname -a",
+}

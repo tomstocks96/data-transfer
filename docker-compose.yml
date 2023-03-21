@@ -7,6 +7,7 @@ networks:
 
 volumes:
   kafka-logs:
+  zookeeper-logs:
 
 services:
 
@@ -19,7 +20,7 @@ services:
           connections:
             docker-kafka-server:
               properties:
-                bootstrap.servers: "broker:29092"
+                bootstrap.servers: "kafka:29092"
               schema-registry:
                 url: "http://schema-registry:8081"
               connect:
@@ -41,11 +42,13 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     networks:
       - kafka
+    volumes:
+      - zookeeper-logs:/var/lib/zookeeper
 
-  broker:
+  kafka:
     image: confluentinc/cp-kafka:7.3.0
-    hostname: broker
-    container_name: broker
+    hostname: kafka
+    container_name: kafka
     depends_on:
       - zookeeper
     ports:
@@ -56,7 +59,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
@@ -66,19 +69,14 @@ services:
     networks:
       - kafka
     volumes:
-      - kafka-logs:/var/lib/kafka/data
-
-  schema-registry:
-    image: confluentinc/cp-schema-registry:7.3.0
-    hostname: schema-registry
-    container_name: schema-registry
-    depends_on:
-      - broker
-    ports:
-      - "8081:8081"
-    environment:
-      SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
-      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      - kafka-logs:/var/lib/kafka
+  
+  stream-processor:
+    build: 
+      dockerfile: build.Dockerfile
+    hostname: stream-processor
+    container_name: stream-processor
     networks:
       - kafka
+    volumes:
+      - ./:/app/

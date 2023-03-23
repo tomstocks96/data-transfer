@@ -3,7 +3,7 @@ import json
 import faust
 from timing_parser.timing_parser import TimingParser
 
-app = faust.App('tsl-lap-processor', broker='kafka://localhost:9092')
+app = faust.App('tsl-lap-processor', broker='kafka://kafka:29092')
 consume_topic = app.topic('tsl-monitor-timings')
 produce_topic = app.topic('tsl-monitor-laps')
 

@@ -1,6 +1,7 @@
 import json, logging
 from typing import List
-import datetime
+from datetime import datetime
+from datetime import timedelta
 import time
 
 class TimingParser:
@@ -19,16 +20,29 @@ class TimingParser:
       }
 
    def _get_timing_map(self, key):
-      return self._timing_maps.get(key, self._do_not_parse)
+      method = self._timing_maps.get(key, self._do_not_parse)
+      self.logger.debug(f'returning method {method} for key {key}')
+      return method
    
    def _parse_time_duration_seconds(self, timing: str):
-      timing  = float(timing)
-      return timing
-   
+      try:
+         self.logger.debug(f'converting second timing {timing} into seconds')
+         timing  = float(timing)
+         return timing
+      except Exception as e: 
+         self.logger.warn(f'conversion failed with error {e}')
+         return None
+
    def _parse_time_duration_minutes(self, timing: str):
-      timing = time.strptime(timing,'%M:%S.%f')
-      seconds = datetime.timedelta(hours=timing.tm_hour,minutes=timing.tm_min,seconds=timing.tm_sec).total_seconds()
-      return seconds
+      try:
+         self.logger.debug(f'converting minute timing {timing} into seconds')
+         timing = datetime.strptime(timing,'%M:%S.%f')
+         seconds = timedelta(minutes=timing.minute,seconds=timing.second,microseconds=timing.microsecond).total_seconds()
+         return seconds
+      except Exception as e: 
+         self.logger.warn(f'conversion failed with error {e}')
+         return None
+
    
    def _do_not_parse(self, timing: str):
       return timing
@@ -37,9 +51,14 @@ class TimingParser:
    def parse_message(self, message):
       for key in message:
          parse_method = self._get_timing_map(key)
+         self.logger.debug(f'initial value was {message[key]}')
          value = parse_method(message[key])
+         self.logger.debug(f'method returned {value}')
          message[key] = value
-      return message
+
+      lap_message = {k: v for k, v in message.items() if v is not None}
+      
+      return lap_message
 
 
    

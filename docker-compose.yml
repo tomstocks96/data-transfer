@@ -70,4 +70,13 @@ services:
       - kafka
     volumes:
       - kafka-logs:/var/lib/kafka
+
+  stream-processor:
+    build: 
+      dockerfile: ./Dockerfile
+    hostname: stream-processor
+    container_name: stream-processor
+    networks:
+      - kafka
+
   

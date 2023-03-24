@@ -21,7 +21,7 @@ class TimingParser:
 
    def _get_timing_map(self, key):
       method = self._timing_maps.get(key, self._do_not_parse)
-      self.logger.debug(f'returning method {method} for key {key}')
+      self.logger.debug(f'returning method {method.__name__} for key {key}')
       return method
    
    def _parse_time_duration_seconds(self, timing: str):
@@ -29,11 +29,14 @@ class TimingParser:
          self.logger.debug(f'converting second timing {timing} into seconds')
          timing  = float(timing)
          return timing
+      
       except ValueError as e:
          try:
             self._parse_time_duration_minutes(timing=timing)
          except Exception as e:
-            raise
+            self.logger.debug(f'also trying converting minute timing {timing} into seconds')
+            return None
+
       except Exception as e: 
          self.logger.warn(f'conversion failed with error {e}')
          return None
@@ -55,6 +58,7 @@ class TimingParser:
 
    def parse_message(self, message):
       for key in message:
+         self.logger.debug(f'for key: {key}')
          parse_method = self._get_timing_map(key)
          self.logger.debug(f'initial value was {message[key]}')
          value = parse_method(message[key])

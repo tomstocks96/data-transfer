@@ -4,5 +4,3 @@ COPY ./pyproject.toml ./pyproject.toml
 COPY ./poetry.lock ./poetry.lock
 RUN pip install poetry==1.3.2 \
     && poetry install 
-
-CMD [ "poetry", "run", "python", "main.py" ]

@@ -1,4 +1,4 @@
 FROM datatransfer:latest
 WORKDIR /app/
-COPY . .
-CMD [ "poetry", "run", "python", "main.py" ]
+COPY . .        
+CMD [ "faust", "-A", "main"]

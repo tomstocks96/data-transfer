@@ -32,9 +32,11 @@ class TimingParser:
       
       except ValueError as e:
          try:
-            self._parse_time_duration_minutes(timing=timing)
-         except Exception as e:
             self.logger.debug(f'also trying converting minute timing {timing} into seconds')
+            timing = self._parse_time_duration_minutes(timing=timing)
+            return timing
+         except Exception as e:
+            self.logger.warn(f'conversion failed with error {e}')
             return None
 
       except Exception as e: 

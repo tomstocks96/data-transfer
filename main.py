@@ -16,3 +16,5 @@ async def data_type_unify(messages):
         message = timing_parser.parse_message(message)
         await produce_topic.send(value=json.dumps(message))
 
+if __name__ == '__main__':
+    app.main()

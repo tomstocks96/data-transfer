@@ -46,9 +46,20 @@ class TimingParser:
    def _parse_time_duration_minutes(self, timing: str):
       try:
          self.logger.debug(f'converting minute timing {timing} into seconds')
+         timing = str(timing)
          timing = datetime.strptime(timing,'%M:%S.%f')
          seconds = timedelta(minutes=timing.minute,seconds=timing.second,microseconds=timing.microsecond).total_seconds()
          return seconds
+      
+      except ValueError as e:
+         try:
+            self.logger.debug(f'also trying converting second timing {timing} into seconds')
+            timing = self._parse_time_duration_seconds(timing=timing)
+            return timing
+         except Exception as e:
+            self.logger.warn(f'conversion failed with error {e}')
+            return None
+
       except Exception as e: 
          self.logger.warn(f'conversion failed with error {e}')
          return None
